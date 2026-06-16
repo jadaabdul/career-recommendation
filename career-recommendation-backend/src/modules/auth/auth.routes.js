@@ -4,8 +4,33 @@ const router = express.Router();
 
 const authController = require("./auth.controller");
 
-router.post("/register", authController.register);
+const {
+  registerValidation,
+  loginValidation,
+} = require("../../middleware/validation/auth.validation");
 
-router.post("/login", authController.login);
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register User
+ *     tags: [Auth]
+ *     responses:
+ *       201:
+ *         description: User Registered
+ */
+router.post("/register", registerValidation, authController.register);
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login User
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Login Successful
+ */
+router.post("/login", loginValidation, authController.login);
 
 module.exports = router;

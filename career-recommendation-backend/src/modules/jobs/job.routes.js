@@ -4,11 +4,13 @@ const router = express.Router();
 
 const verifyToken = require("../../middleware/auth.middleware");
 
-const jobController = require("./job.controller");
-
 const isAdmin = require("../../middleware/admin.middleware");
 
-router.post("/", verifyToken, isAdmin, jobController.create);
+const { jobValidation } = require("../../middleware/validation/job.validation");
+
+const jobController = require("./job.controller");
+
+router.post("/", verifyToken, isAdmin, jobValidation, jobController.create);
 
 router.get("/", jobController.getAll);
 
