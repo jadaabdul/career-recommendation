@@ -2,16 +2,13 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import AdminLayout from "../layouts/AdminLayout";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 function Courses() {
   const [courses, setCourses] = useState([]);
-
   const [categories, setCategories] = useState([]);
-
   const [editId, setEditId] = useState(null);
-
   const [search, setSearch] = useState("");
-
   const [page, setPage] = useState(1);
 
   const [form, setForm] = useState({
@@ -39,7 +36,6 @@ function Courses() {
 
   const fetchCategories = async () => {
     const res = await api.get("/categories");
-
     setCategories(res.data);
   };
 
@@ -53,47 +49,59 @@ function Courses() {
   const addCourse = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.post("/courses", form, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      await api.post("/courses", form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    setForm({
-      title: "",
-      description: "",
-      price: "",
-      thumbnail: "",
-      category_id: "",
-      instructor_id: 1,
-    });
+      setForm({
+        title: "",
+        description: "",
+        price: "",
+        thumbnail: "",
+        category_id: "",
+        instructor_id: 1,
+      });
 
-    fetchCourses();
+      fetchCourses();
+
+      toast.success("Course Added Successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed To Add Course");
+    }
   };
 
   const updateCourse = async () => {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.put(`/courses/${editId}`, form, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      await api.put(`/courses/${editId}`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    setEditId(null);
+      setEditId(null);
 
-    setForm({
-      title: "",
-      description: "",
-      price: "",
-      thumbnail: "",
-      category_id: "",
-      instructor_id: 1,
-    });
+      setForm({
+        title: "",
+        description: "",
+        price: "",
+        thumbnail: "",
+        category_id: "",
+        instructor_id: 1,
+      });
 
-    fetchCourses();
+      fetchCourses();
+
+      toast.success("Course Updated Successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed To Update Course");
+    }
   };
 
   const deleteCourse = async (id) => {
@@ -108,17 +116,21 @@ function Courses() {
 
     if (!result.isConfirmed) return;
 
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.delete(`/courses/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      await api.delete(`/courses/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    fetchCourses();
+      fetchCourses();
 
-    Swal.fire("Deleted!", "Course deleted successfully.", "success");
+      Swal.fire("Deleted!", "Course deleted successfully.", "success");
+    } catch (error) {
+      toast.error("Failed To Delete Course");
+    }
   };
 
   return (
@@ -206,13 +218,9 @@ function Courses() {
         <thead>
           <tr>
             <th>ID</th>
-
             <th>Title</th>
-
             <th>Price</th>
-
             <th>Category</th>
-
             <th>Action</th>
           </tr>
         </thead>

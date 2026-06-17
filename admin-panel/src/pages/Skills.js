@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import AdminLayout from "../layouts/AdminLayout";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 function Skills() {
   const [skills, setSkills] = useState([]);
-
   const [skillName, setSkillName] = useState("");
-
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
@@ -15,64 +15,92 @@ function Skills() {
 
   const fetchSkills = async () => {
     const res = await api.get("/skills");
-
     setSkills(res.data);
   };
 
   const addSkill = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.post(
-      "/skills",
-      {
-        skill_name: skillName,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await api.post(
+        "/skills",
+        {
+          skill_name: skillName,
         },
-      },
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-    setSkillName("");
+      setSkillName("");
 
-    fetchSkills();
+      fetchSkills();
+
+      toast.success("Skill Added Successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed To Add Skill");
+    }
   };
 
   const editSkill = async () => {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.put(
-      `/skills/${editId}`,
-      {
-        skill_name: skillName,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await api.put(
+        `/skills/${editId}`,
+        {
+          skill_name: skillName,
         },
-      },
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-    setSkillName("");
+      setSkillName("");
 
-    setEditId(null);
+      setEditId(null);
 
-    fetchSkills();
+      fetchSkills();
+
+      toast.success("Skill Updated Successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed To Update Skill");
+    }
   };
 
   const deleteSkill = async (id) => {
-    const token = localStorage.getItem("token");
-
-    await api.delete(`/skills/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This skill will be deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes Delete",
+      cancelButtonText: "Cancel",
     });
 
-    fetchSkills();
+    if (!result.isConfirmed) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      await api.delete(`/skills/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchSkills();
+
+      Swal.fire("Deleted!", "Skill deleted successfully.", "success");
+    } catch (error) {
+      toast.error("Failed To Delete Skill");
+    }
   };
 
   return (
@@ -111,9 +139,7 @@ function Skills() {
         <thead>
           <tr>
             <th>ID</th>
-
             <th>Skill Name</th>
-
             <th>Action</th>
           </tr>
         </thead>

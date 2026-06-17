@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Login() {
   const navigate = useNavigate();
@@ -25,11 +26,17 @@ function Login() {
 
       localStorage.setItem("token", res.data.token);
 
-      alert("Login Success");
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      navigate("/dashboard");
+      toast.success("Login Success");
+
+      if (res.data.user.role === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/user-dashboard");
+      }
     } catch (error) {
-      alert(error.response?.data?.message || "Login Failed");
+      toast.error(error.response?.data?.message || "Login Failed");
     }
   };
 
@@ -39,7 +46,7 @@ function Login() {
         <div className="col-md-4">
           <div className="card shadow">
             <div className="card-body">
-              <h3 className="text-center mb-4">Admin Login</h3>
+              <h3 className="text-center mb-4">Login</h3>
 
               <form onSubmit={handleSubmit}>
                 <input

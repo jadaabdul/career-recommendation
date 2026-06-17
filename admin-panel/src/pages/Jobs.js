@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import AdminLayout from "../layouts/AdminLayout";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
-
   const [editId, setEditId] = useState(null);
-
   const [search, setSearch] = useState("");
-
   const [page, setPage] = useState(1);
 
   const [form, setForm] = useState({
@@ -40,45 +38,57 @@ function Jobs() {
   const addJob = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.post("/jobs", form, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      await api.post("/jobs", form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    setForm({
-      title: "",
-      company: "",
-      location: "",
-      salary: "",
-      description: "",
-    });
+      setForm({
+        title: "",
+        company: "",
+        location: "",
+        salary: "",
+        description: "",
+      });
 
-    fetchJobs();
+      fetchJobs();
+
+      toast.success("Job Added Successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed To Add Job");
+    }
   };
 
   const updateJob = async () => {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.put(`/jobs/${editId}`, form, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      await api.put(`/jobs/${editId}`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    setEditId(null);
+      setEditId(null);
 
-    setForm({
-      title: "",
-      company: "",
-      location: "",
-      salary: "",
-      description: "",
-    });
+      setForm({
+        title: "",
+        company: "",
+        location: "",
+        salary: "",
+        description: "",
+      });
 
-    fetchJobs();
+      fetchJobs();
+
+      toast.success("Job Updated Successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed To Update Job");
+    }
   };
 
   const deleteJob = async (id) => {
@@ -93,17 +103,21 @@ function Jobs() {
 
     if (!result.isConfirmed) return;
 
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.delete(`/jobs/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      await api.delete(`/jobs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    fetchJobs();
+      fetchJobs();
 
-    Swal.fire("Deleted!", "Job deleted successfully.", "success");
+      Swal.fire("Deleted!", "Job deleted successfully.", "success");
+    } catch (error) {
+      toast.error("Failed To Delete Job");
+    }
   };
 
   return (
@@ -193,13 +207,9 @@ function Jobs() {
           {jobs.map((job) => (
             <tr key={job.id}>
               <td>{job.id}</td>
-
               <td>{job.title}</td>
-
               <td>{job.company}</td>
-
               <td>{job.location}</td>
-
               <td>{job.salary}</td>
 
               <td>

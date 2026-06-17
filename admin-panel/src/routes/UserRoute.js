@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 
-function ProtectedRoute({ children }) {
+function UserRoute({ children }) {
   const token = localStorage.getItem("token");
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -9,11 +9,11 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/" />;
   }
 
-  if (!user || user.role !== "admin") {
-    return <Navigate to="/user-dashboard" />;
+  if (!user || user.role !== "user") {
+    return <Navigate to="/dashboard" />;
   }
 
   return children;
 }
 
-export default ProtectedRoute;
+export default UserRoute;

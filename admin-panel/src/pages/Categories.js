@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import AdminLayout from "../layouts/AdminLayout";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -39,8 +40,10 @@ function Categories() {
       setName("");
 
       fetchCategories();
+
+      toast.success("Category Added Successfully");
     } catch (error) {
-      alert(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Failed To Add Category");
     }
   };
 
@@ -63,8 +66,10 @@ function Categories() {
       setName("");
 
       fetchCategories();
+
+      toast.success("Category Updated Successfully");
     } catch (error) {
-      alert(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Failed To Update Category");
     }
   };
 
@@ -80,17 +85,21 @@ function Categories() {
 
     if (!result.isConfirmed) return;
 
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.delete(`/categories/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      await api.delete(`/categories/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    fetchCategories();
+      fetchCategories();
 
-    Swal.fire("Deleted!", "Category deleted successfully.", "success");
+      Swal.fire("Deleted!", "Category deleted successfully.", "success");
+    } catch (error) {
+      toast.error("Failed To Delete Category");
+    }
   };
 
   return (
@@ -129,9 +138,7 @@ function Categories() {
         <thead>
           <tr>
             <th>ID</th>
-
             <th>Name</th>
-
             <th>Action</th>
           </tr>
         </thead>

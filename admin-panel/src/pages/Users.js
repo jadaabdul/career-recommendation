@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import AdminLayout from "../layouts/AdminLayout";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 function Users() {
   const [users, setUsers] = useState([]);
-
   const [editId, setEditId] = useState(null);
 
   const [form, setForm] = useState({
@@ -35,53 +35,65 @@ function Users() {
   const addUser = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.post("/users", form, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    setForm({
-      name: "",
-      email: "",
-      password: "",
-      mobile: "",
-      role: "user",
-    });
-
-    fetchUsers();
-  };
-
-  const updateUser = async () => {
-    const token = localStorage.getItem("token");
-
-    await api.put(
-      `/users/${editId}`,
-      {
-        name: form.name,
-        mobile: form.mobile,
-        role: form.role,
-      },
-      {
+      await api.post("/users", form, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
-    );
+      });
 
-    setEditId(null);
+      setForm({
+        name: "",
+        email: "",
+        password: "",
+        mobile: "",
+        role: "user",
+      });
 
-    setForm({
-      name: "",
-      email: "",
-      password: "",
-      mobile: "",
-      role: "user",
-    });
+      fetchUsers();
 
-    fetchUsers();
+      toast.success("User Added Successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed To Add User");
+    }
+  };
+
+  const updateUser = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await api.put(
+        `/users/${editId}`,
+        {
+          name: form.name,
+          mobile: form.mobile,
+          role: form.role,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setEditId(null);
+
+      setForm({
+        name: "",
+        email: "",
+        password: "",
+        mobile: "",
+        role: "user",
+      });
+
+      fetchUsers();
+
+      toast.success("User Updated Successfully");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed To Update User");
+    }
   };
 
   const deleteUser = async (id) => {
@@ -96,17 +108,21 @@ function Users() {
 
     if (!result.isConfirmed) return;
 
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.delete(`/users/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      await api.delete(`/users/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    fetchUsers();
+      fetchUsers();
 
-    Swal.fire("Deleted!", "User deleted successfully.", "success");
+      Swal.fire("Deleted!", "User deleted successfully.", "success");
+    } catch (error) {
+      toast.error("Failed To Delete User");
+    }
   };
 
   return (

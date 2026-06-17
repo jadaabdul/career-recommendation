@@ -10,6 +10,15 @@ import Users from "../pages/Users";
 
 import ProtectedRoute from "./ProtectedRoute";
 
+import UserDashboard from "../pages/UserDashboard";
+import Profile from "../pages/Profile";
+import MySkills from "../pages/MySkills";
+import Recommendations from "../pages/Recommendations";
+import UserCourses from "../pages/UserCourses";
+import UserJobs from "../pages/UserJobs";
+import NotFound from "../pages/NotFound";
+import UserRoute from "./UserRoute";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -67,6 +76,60 @@ function AppRoutes() {
             <ProtectedRoute>
               <Users />
             </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/user-dashboard"
+          element={
+            <UserRoute>
+              <UserDashboard />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <UserRoute>
+              <Profile />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/my-skills"
+          element={
+            <UserRoute>
+              <MySkills />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/recommendations"
+          element={
+            <UserRoute>
+              <Recommendations />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/user-courses"
+          element={
+            <UserRoute>
+              <UserCourses />
+            </UserRoute>
+          }
+        />
+
+        <Route
+          path="/user-jobs"
+          element={
+            <UserRoute>
+              <UserJobs />
+            </UserRoute>
           }
         />
       </Routes>
