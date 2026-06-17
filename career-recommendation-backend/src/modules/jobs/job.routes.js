@@ -16,6 +16,10 @@ router.get("/", jobController.getAll);
 
 router.get("/:id", jobController.getOne);
 
+router.put("/:id", verifyToken, isAdmin, jobValidation, jobController.update);
+
+router.delete("/:id", verifyToken, isAdmin, jobController.remove);
+
 router.post("/:jobId/skills", verifyToken, isAdmin, jobController.assignSkill);
 
 router.get("/:jobId/skills", jobController.jobSkills);

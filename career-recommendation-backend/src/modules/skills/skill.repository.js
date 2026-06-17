@@ -68,10 +68,34 @@ const removeUserSkill = (userId, skillId) => {
   });
 };
 
+const updateSkill = (id, skillName) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "UPDATE skills SET skill_name=? WHERE id=?",
+      [skillName, id],
+      (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      },
+    );
+  });
+};
+
+const deleteSkill = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query("DELETE FROM skills WHERE id=?", [id], (err, result) => {
+      if (err) reject(err);
+      else resolve(result);
+    });
+  });
+};
+
 module.exports = {
   createSkill,
   getAllSkills,
   addUserSkill,
   getUserSkills,
   removeUserSkill,
+  updateSkill,
+  deleteSkill,
 };

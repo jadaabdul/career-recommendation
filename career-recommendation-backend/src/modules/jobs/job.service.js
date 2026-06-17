@@ -30,10 +30,28 @@ const jobSkills = async (jobId) => {
   return await jobRepo.getJobSkills(jobId);
 };
 
+const update = async (id, data) => {
+  await jobRepo.updateJob(id, data);
+
+  return {
+    message: "Job Updated Successfully",
+  };
+};
+
+const remove = async (id) => {
+  await jobRepo.deleteJob(id);
+
+  return {
+    message: "Job Deleted Successfully",
+  };
+};
+
 module.exports = {
   create,
   getAll,
   getOne,
   assignSkill,
   jobSkills,
+  update,
+  remove,
 };

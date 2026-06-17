@@ -28,7 +28,59 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const result = await userService.getAllUsers();
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const editUser = async (req, res) => {
+  try {
+    const result = await userService.editUser(req.params.id, req.body);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const removeUser = async (req, res) => {
+  try {
+    const result = await userService.removeUser(req.params.id);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+const createUser = async (req, res) => {
+  try {
+    const result = await userService.createUser(req.body);
+
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   getProfile,
   updateProfile,
+  getAllUsers,
+  editUser,
+  removeUser,
+  createUser,
 };

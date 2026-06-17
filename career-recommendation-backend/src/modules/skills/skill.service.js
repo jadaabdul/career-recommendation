@@ -32,10 +32,28 @@ const removeSkill = async (userId, skillId) => {
   };
 };
 
+const update = async (id, skillName) => {
+  await skillRepo.updateSkill(id, skillName);
+
+  return {
+    message: "Skill Updated Successfully",
+  };
+};
+
+const remove = async (id) => {
+  await skillRepo.deleteSkill(id);
+
+  return {
+    message: "Skill Deleted Successfully",
+  };
+};
+
 module.exports = {
   create,
   getAll,
   assignSkill,
   mySkills,
   removeSkill,
+  update,
+  remove,
 };

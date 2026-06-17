@@ -65,3 +65,30 @@ exports.removeSkill = async (req, res) => {
     });
   }
 };
+
+exports.update = async (req, res) => {
+  try {
+    const result = await skillService.update(
+      req.params.id,
+      req.body.skill_name,
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const result = await skillService.remove(req.params.id);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};

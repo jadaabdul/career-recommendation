@@ -79,10 +79,47 @@ const getJobSkills = (jobId) => {
   });
 };
 
+const updateJob = (id, data) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      `UPDATE jobs
+       SET title=?,
+           company=?,
+           location=?,
+           salary=?,
+           description=?
+       WHERE id=?`,
+      [
+        data.title,
+        data.company,
+        data.location,
+        data.salary,
+        data.description,
+        id,
+      ],
+      (err, result) => {
+        if (err) reject(err);
+        else resolve(result);
+      },
+    );
+  });
+};
+
+const deleteJob = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query("DELETE FROM jobs WHERE id=?", [id], (err, result) => {
+      if (err) reject(err);
+      else resolve(result);
+    });
+  });
+};
+
 module.exports = {
   createJob,
   getJobs,
   getJobById,
   addJobSkill,
   getJobSkills,
+  updateJob,
+  deleteJob,
 };

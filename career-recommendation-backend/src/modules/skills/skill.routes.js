@@ -10,6 +10,10 @@ router.post("/", verifyToken, skillController.create);
 
 router.get("/", skillController.getAll);
 
+router.put("/:id", verifyToken, skillController.update);
+
+router.delete("/:id", verifyToken, skillController.remove);
+
 router.post("/user-skill", verifyToken, skillController.assignSkill);
 
 router.get("/my-skills", verifyToken, skillController.mySkills);
